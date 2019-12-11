@@ -1,4 +1,4 @@
-This is the code and documention for my [[https://adventofcode.com/][Advent of Code]] adventures. Thanks for
+This is the code and documentation for my [[https://adventofcode.com/][Advent of Code]] adventures. Thanks for
 taking a look! I welcome your thoughts and feedback.
 
 * Advent of Code 2019
@@ -8,7 +8,21 @@ Christmas using quick thinking and the power of the [[https://crystal-lang.org][
 language]]. I've been slowly learning Crystal for a while & am feeling ready to
 use it to tackle some actual challenges and build proficiency.
 
-For each day, I plan to build or extend 
+For each day, I plan to build or extend a well-behaved CLI tool that allows me
+to solve the puzzle using a Bash one-liner. I'm challenging myself to follow a
+set of priorities that align with how I want to write code:
+
+*** Do:
+- utilize a pure functional style
+- use immutable, persistent data structures
+- write readable, semantically meaningful code
+- provide a well-behaved command line interface
+
+*** Don't:
+- rely on global or mutable state
+- switch back arbitrarily to imperative style
+- optimize prematurely
+- obsess over minimal (or even DRY) code
 
 ** Day 1
 I wrote the ~rocket-fuel~ utility to calculate fuel requirements.
