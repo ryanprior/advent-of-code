@@ -20,7 +20,7 @@ I wrote the ~rocket-fuel~ utility to calculate fuel requirements.
 ** Day 2
 On the second day of Christmas begins the saga of the /intcode computer!/
 - implementation: [[./2019/computer/computer.cr]]
-- build: `make bin/computer`
+- build: ~make bin/computer~
 - solve part 1:
   #+BEGIN_SRC bash
   bin/computer run -s 1,12 -s 2,2 inputs/day-2/puzzle-input.ic \
@@ -38,7 +38,7 @@ On the second day of Christmas begins the saga of the /intcode computer!/
 This challenge required calculating the location of intersections and the
 lengths of paths. I wrote the ~trace-wires~ utility to assist.
 - implementation: [[./2019/trace-wires/trace-wires.cr]]
-- build: `make bin/trace-wires`
+- build: ~make bin/trace-wires~
 - solve part 1: ~bin/trace-wires nearest-intersection inputs/day-3/puzzle-input.wire~
 - solve part 2: ~bin/trace-wires nearest-intersection inputs/day-3/puzzle-input.wire~
 
@@ -46,7 +46,7 @@ lengths of paths. I wrote the ~trace-wires~ utility to assist.
 Elves vaguely remember an important password & it's time to crack it using the
 ~password~ utility.
 - implementation: [[./2019/password/password.cr]]
-- build: `make bin/password`
+- build: ~make bin/password~
 - solve part 1: ~bin/password [PUZZLE INPUT MIN] [MAX]~
 - solve part 2: ~bin/password --cap-run-length [PUZZLE INPUT MIN] [MAX]~
 
@@ -55,6 +55,6 @@ Intcode Part 2: Thermoelectric Boogaloo. This challenge prompted me to refactor
 ~computer.cr~, eliminating a number of previous simplifying assumptions. Then I
 added the new functions necessary to solve the puzzle.
 - implementation: [[./2019/computer/computer.cr]]
-- build: `make bin/computer`
+- build: ~make bin/computer~
 - solve part 1: ~bin/password run -q inputs/day-5/puzzle-input.ic <<<1~
 - solve part 2: ~bin/password run -q inputs/day-5/puzzle-input.ic <<<5~
