@@ -1,0 +1,9 @@
+name: ryanprior-advent-of-code-2019
+version: 1
+dependencies:
+  immutable:
+    github: lucaong/immutable
+  cli:
+    # github: mosop/cli
+    github: bcardiff/cli
+    branch: bcardiff/use-fork

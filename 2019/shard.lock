@@ -1,0 +1,22 @@
+version: 1.0
+shards:
+  callback:
+    github: bcardiff/callback
+    commit: 8dc1c3b0f461332fceb4db5c276c7bfcfbe38481
+
+  cli:
+    github: bcardiff/cli
+    commit: 785086069823569f67302465d17de4b1286536a0
+
+  immutable:
+    github: lucaong/immutable
+    version: 0.1.24
+
+  optarg:
+    github: bcardiff/optarg
+    commit: c4ed4d4b84521c6bf5121af0ee277b591b9ce30d
+
+  string_inflection:
+    github: mosop/string_inflection
+    version: 0.2.1
+

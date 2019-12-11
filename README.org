@@ -1,0 +1,52 @@
+This is the code and documention for my [[https://adventofcode.com/][Advent of Code]] adventures. Thanks for
+taking a look! I welcome your thoughts and feedback.
+
+* Advent of Code 2019
+
+Santa is stranded at the edge of the Solar System and it's up to me to save
+Christmas using quick thinking and the power of the [[https://crystal-lang.org][Crystal programming
+language]]. I've been slowly learning Crystal for a while & am feeling ready to
+use it to tackle some actual challenges and build proficiency.
+
+For each day, I plan to build or extend 
+
+** Day 1
+I wrote the ~rocket-fuel~ utility to calculate fuel requirements.
+- implementation: [[./2019/rocket-fuel/rocket-fuel.cr]]
+- build: ~make bin/rocket-fuel~
+- solve part 1: ~bin/rocket-fuel inputs/day-1/puzzle-input.mod~
+- solve part 2: ~bin/rocket-fuel -x inputs/day-1/puzzle-input.mod~
+
+** Day 2
+On the second day of Christmas begins the saga of the /intcode computer!/
+- implementation: [[./2019/computer/computer.cr]]
+- build: `make bin/computer`
+- solve part 1:
+  #+BEGIN_SRC bash
+  bin/computer run -s 1,12 -s 2,2 inputs/day-2/puzzle-input.ic \
+    | head -n1 \
+    | cut -d' ' -f1
+  #+END_SRC
+- solve part 2:
+  #+BEGIN_SRC bash
+  bin/computer search --domain 0,99 \
+                      --target 19690720 \
+                      inputs/day-2/puzzle-input.ic
+  #+END_SRC
+
+** Day 3
+This challenge required calculating the location of intersections and the
+lengths of paths. I wrote the ~trace-wires~ utility to assist.
+- implementation: [[./2019/trace-wires/trace-wires.cr]]
+- build: `make bin/trace-wires`
+- solve part 1: ~bin/trace-wires nearest-intersection inputs/day-3/puzzle-input.wire~
+- solve part 2: ~bin/trace-wires nearest-intersection inputs/day-3/puzzle-input.wire~
+
+** Day 4
+Elves vaguely remember an important password & it's time to crack it using the
+~password~ utility.
+- implementation: [[./2019/password/password.cr]]
+- build: `make bin/password`
+- solve part 1: ~bin/password [PUZZLE INPUT MIN] [MAX]~
+- solve part 2: ~bin/password --cap-run-length [PUZZLE INPUT MIN] [MAX]~
+
