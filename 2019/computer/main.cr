@@ -34,6 +34,7 @@ class Computer < Cli::Supercommand
   class Run < IntcodeCommand
 
     class Options
+      bool ["-q", "--quiet"], desc: "quiet program result; only print explicit outputs"
       array ["-s", "--substitute"], desc: "substitute data before running the program (eg \"1,12\")"
     end
 
@@ -47,8 +48,10 @@ class Computer < Cli::Supercommand
         index, value = sub.split(",").map(&.to_i { panic "error: substitutions must be integers" })
         accum.set(index, value)
       end
+      STDERR.puts "(end of program output)" if options.verbose?
       STDERR.puts "result:" if options.verbose?
-      puts format_program(run(new_program), !options.one_line?)
+      result = run(new_program)
+      puts format_program(result, !options.one_line?) unless options.quiet?
     end
   end
 

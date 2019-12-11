@@ -50,3 +50,11 @@ Elves vaguely remember an important password & it's time to crack it using the
 - solve part 1: ~bin/password [PUZZLE INPUT MIN] [MAX]~
 - solve part 2: ~bin/password --cap-run-length [PUZZLE INPUT MIN] [MAX]~
 
+** Day 5
+Intcode Part 2: Thermoelectric Boogaloo. This challenge prompted me to refactor
+~computer.cr~, eliminating a number of previous simplifying assumptions. Then I
+added the new functions necessary to solve the puzzle.
+- implementation: [[./2019/computer/computer.cr]]
+- build: `make bin/computer`
+- solve part 1: ~bin/password run -q inputs/day-5/puzzle-input.ic <<<1~
+- solve part 2: ~bin/password run -q inputs/day-5/puzzle-input.ic <<<5~
