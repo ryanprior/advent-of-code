@@ -92,16 +92,23 @@ class Computer < Cli::Supercommand
     end
 
     def run
+      chan = Channel({noun: Int32, verb: Int32, result: Int32}).new(32)
+
       min, max = domain
       (min..max).each do |noun|
-        (min..max).each do |verb|
-          new_program = program.set(1, noun).set(2, verb)
-          result = run(new_program)
-          if result.first == target
-            success noun, verb
-          else
-            progress noun, verb, result.first if options.verbose?
+        spawn do
+          (min..max).each do |verb|
+            new_program = program.set(1, noun).set(2, verb)
+            chan.send({noun: noun, verb: verb, result: run(new_program).first})
           end
+        end
+      end
+      ((max-min)**2).times do
+        data = chan.receive
+        if data[:result] == target
+          success data[:noun], data[:verb]
+        else
+          progress data[:noun], data[:verb], data[:result] if options.verbose?
         end
       end
       failure
