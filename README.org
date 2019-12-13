@@ -72,3 +72,11 @@ added the new functions necessary to solve the puzzle.
 - build: ~make bin/computer~
 - solve part 1: ~bin/password run -q inputs/day-5/puzzle-input.ic <<<1~
 - solve part 2: ~bin/password run -q inputs/day-5/puzzle-input.ic <<<5~
+
+** Day 6
+In order to plot an orbital path to Santa, we stop by a mapping station to
+process some maps with the ~orbit~ utility.
+- implementation: [[./2019/orbit/orbit.cr]]
+- build: ~make bin/orbit~
+- solve part 1: ~bin/orbit sum inputs/day-6/puzzle-input.map~
+- solve part 2: ~bin/orbit path-distance inputs/day-6/puzzle-input.map~
