@@ -109,3 +109,12 @@ reading the final output.
 - build: ~make bin/computer~
 - solve part 1: ~bin/computer optimize --domain 0,4 inputs/day-7/puzzle-input.ic~
 - solve part 2: ~bin/computer optimize --domain 5,9 --loop inputs/day-7/puzzle-input.ic~
+
+** Day 8
+This challenge lent itself to a satisfyingly compact representation in Crystal.
+I also found out that the "colorize" module is cute and easy to use.
+
+- implementation: [[./image/image.cr]]
+- build: ~make bin/image~
+- solve part 1: ~bin/image check -d 26x6 inputs/day-8/puzzle-input.sif~
+- solve part 2: ~bin/image show -d 26x6 inputs/day-8/puzzle-input.sif~
