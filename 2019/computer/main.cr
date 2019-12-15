@@ -1,8 +1,9 @@
-# require "option_parser"
 require "cli"
 require "./computer.cr"
 
 abstract class IntcodeCommand < Cli::Command
+  @program : Program | Nil = nil
+
   class Options
     bool ["-v", "--verbose"], desc: "print verbose output", default: false
     bool ["-o", "--one-line"], desc: "print output on one line", default: false
@@ -11,6 +12,7 @@ abstract class IntcodeCommand < Cli::Command
   end
 
   def program
+    return @program.not_nil! if @program
     program_file = case args.file
                    when "", "-"
                      STDIN
@@ -20,7 +22,8 @@ abstract class IntcodeCommand < Cli::Command
 
     result = Immutable.from(program_file.each_line.first.split(",").map(&.to_i))
     STDERR.puts "program:\n#{format_program(result, !options.one_line?)}" if options.verbose?
-    result
+    @program = result
+    @program.not_nil!
   end
 end
 
@@ -50,7 +53,7 @@ class Computer < Cli::Supercommand
       end
       STDERR.puts "(end of program output)" if options.verbose?
       STDERR.puts "result:" if options.verbose?
-      result = run(new_program)
+      result = run_intcode(new_program)
       puts format_program(result, !options.one_line?) unless options.quiet?
     end
   end
@@ -92,14 +95,14 @@ class Computer < Cli::Supercommand
     end
 
     def run
-      chan = Channel({noun: Int32, verb: Int32, result: Int32}).new(32)
+      chan = Channel({noun: Int32, verb: Int32, result: Int32}).new
 
       min, max = domain
       (min..max).each do |noun|
         spawn do
           (min..max).each do |verb|
             new_program = program.set(1, noun).set(2, verb)
-            chan.send({noun: noun, verb: verb, result: run(new_program).first})
+            chan.send({noun: noun, verb: verb, result: run_intcode(new_program).first})
           end
         end
       end
@@ -112,6 +115,68 @@ class Computer < Cli::Supercommand
         end
       end
       failure
+    end
+  end
+
+  class Optimize < IntcodeCommand
+    class Options
+      string "--domain",
+             desc: "domain of phase input, comma separated (eg \"0,4\")",
+             required: true
+      bool "--loop", desc: "loop the inputs and outputs for modules during optimization"
+    end
+
+    class Help
+      header "Utility to optimize output to thrusters"
+      footer "This tool is part of Ryan Prior's 2019 Advent of Code"
+    end
+
+    def domain
+      domain_panic_message = "error: domain must be two comma-separated integers"
+      result = options.domain.split(",")
+      panic domain_panic_message unless result.size == 2
+      result.map(&.to_i { panic domain_panic_message })
+    end
+
+    def run
+      candidates = Channel({phase: Array(Int32), result: Int32}).new
+      min, max = domain
+
+      (min..max).to_a.each_permutation.each_slice(16) do |group|
+        spawn do
+          group.each do |phase|
+            channels = phase.map { |n| Channel(Int32).new(2).send n }
+            ch_init = channels.shift
+            ch_init.send 0
+            channels.push options.loop? ? ch_init : Channel(Int32).new(2)
+            status = Channel(Symbol).new()
+            result = channels.reduce(ch_init) do |ch_in, ch_next|
+              spawn same_thread: true do
+                run_intcode(program,
+                            input: ch_in,
+                            output: ch_next)
+                status.send :finished
+              end
+              ch_next
+            end
+            (max-min).times { status.receive }
+            candidates.send({phase: phase,
+                             result: result.receive})
+          end
+        end
+      end
+
+      max_output = {phase: [0], result: -1}
+      Math.gamma(max - min + 2).to_i.times do
+        data = candidates.receive
+        if data[:result] > max_output[:result]
+          max_output = data
+        end
+      end
+      STDERR.puts "max output result:"
+      puts max_output[:result]
+      STDERR.puts "corresponding phase inputs:"
+      puts max_output[:phase]
     end
   end
 end

@@ -70,8 +70,8 @@ Intcode Part 2: Thermoelectric Boogaloo. This challenge prompted me to refactor
 added the new functions necessary to solve the puzzle.
 - implementation: [[./2019/computer/computer.cr]]
 - build: ~make bin/computer~
-- solve part 1: ~bin/password run -q inputs/day-5/puzzle-input.ic <<<1~
-- solve part 2: ~bin/password run -q inputs/day-5/puzzle-input.ic <<<5~
+- solve part 1: ~bin/computer run -q inputs/day-5/puzzle-input.ic <<<1~
+- solve part 2: ~bin/computer run -q inputs/day-5/puzzle-input.ic <<<5~
 
 ** Day 6
 In order to plot an orbital path to Santa, we stop by a mapping station to
@@ -80,3 +80,32 @@ process some maps with the ~orbit~ utility.
 - build: ~make bin/orbit~
 - solve part 1: ~bin/orbit sum inputs/day-6/puzzle-input.map~
 - solve part 2: ~bin/orbit path-distance inputs/day-6/puzzle-input.map~
+
+** Day 7
+This challenge involves running an intcode program in many configurations, with
+chained inputs & outputs, in order to find the maximum possible output of a
+series. I believe I could have done this in ~bash~ without any changes to the
+~computer~ utility, using standard UNIX pipes to handle I/O. Maybe I should have
+done that, because it would have reduced I/O complexity in the ~computer~
+program itself.
+
+However, after all this time using functional Crystal & persistent data
+structures, I've been itching for an opportunity to leverage parallelism, and I
+figured this optimization problem could be a nail for that hammer if you look at
+it funny.
+
+To warm-up, since I've never used Crystal's parallel features before & they're
+in preview anyhow, I updated my day 2 "search" solution to use multiple threads.
+Et voila, it ran ~4 times as fast on my 4-core machine. Now we're living the
+dream!!
+
+As a fortunate side-effect of refactoring the solution to run in parallel,
+implementing part 2 was a minor change: add a new ~--loop~ option to the CLI,
+loop the I/O structures, and wait for all the IC programs to terminate before
+reading the final output.
+
+- implementation: mostly in [[./computer/main.cr]], but with some added facilities
+  for choosing whether to use stdin/stdout or internal data structures for I/O.
+- build: ~make bin/computer~
+- solve part 1: ~bin/computer optimize --domain 0,4 inputs/day-7/puzzle-input.ic~
+- solve part 2: ~bin/computer optimize --domain 5,9 --loop inputs/day-7/puzzle-input.ic~

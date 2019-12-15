@@ -17,9 +17,6 @@ record Operation,
        id : OpCode,
        num_read_params : Int32,
        num_write_params : Int32 do
-  def halt?
-    code == 99
-  end
 
   def size
     num_read_params + num_write_params + 1
@@ -65,6 +62,14 @@ record Instruction,
       false
     end
   end
+
+  def output?
+    operation.id == OpCode::Output
+  end
+
+  def halt?
+    operation.id == OpCode::Halt
+  end
 end
 
 module Intcode
@@ -86,7 +91,11 @@ def panic(message, exit_code = 1)
   exit exit_code
 end
 
-def apply(instruction, data)
+alias Program = Immutable::Vector(Int32)
+
+def apply(instruction : Instruction,
+          data : Program,
+          input : IO::FileDescriptor | Channel(Int32) = STDIN)
   case instruction.operation.id
   when OpCode::Add
     a, b = instruction.read(data)
@@ -95,19 +104,16 @@ def apply(instruction, data)
     a, b = instruction.read(data)
     data.set(instruction.write_params.first, a * b)
   when OpCode::Input
-    input = loop do
-      STDERR.puts "computer: input integer"
-      result = STDIN.gets || raise "can't read from stdin"
-      break result.to_i do
-        STDERR.puts "computer: try again"
-        next
-      end
-    end || raise "can't get input"
-    data.set(instruction.write_params.first, input)
-  when OpCode::Output
-    puts instruction.read(data).first
-    data
-  when OpCode::JumpIfFalse, OpCode::JumpIfTrue
+    result = case input
+             when IO::FileDescriptor
+               STDERR.puts "computer: input integer"
+               input.gets.not_nil!.to_i || raise "can't read int from input"
+             when Channel(Int32)
+               input.receive
+             else raise "unexpected input"
+             end
+    data.set(instruction.write_params.first, result)
+  when OpCode::Output, OpCode::JumpIfFalse, OpCode::JumpIfTrue
     data
   when OpCode::LessThan
     a, b = instruction.read(data)
@@ -122,12 +128,14 @@ def apply(instruction, data)
   end
 end
 
-def run(data)
+def run_intcode(data : Program,
+                input : IO::FileDescriptor | Channel(Int32) = STDIN,
+                output : IO::FileDescriptor | Channel(Int32) = STDOUT)
   offset = 0
   loop do
     panic "fatal: no more instructions" if offset > data.size
     next_instruction = Instruction.from(data, offset)
-    break data if next_instruction.operation.halt?
+    break data if next_instruction.halt?
     target = next_instruction.jump?(data)
     offset = case target
              when Bool
@@ -136,7 +144,17 @@ def run(data)
                target
              else raise "malformed target #{target}"
     end
-    data = apply(next_instruction, data)
+    if next_instruction.output?
+      value = next_instruction.read(data).first
+      case output
+      when IO::FileDescriptor
+        output.puts value
+      when Channel(Int32)
+        output.send value
+      else raise "unexpected output"
+      end
+    end
+    data = apply(next_instruction, data, input)
   end
 end
 
