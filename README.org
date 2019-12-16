@@ -118,3 +118,38 @@ I also found out that the "colorize" module is cute and easy to use.
 - build: ~make bin/image~
 - solve part 1: ~bin/image check -d 26x6 inputs/day-8/puzzle-input.sif~
 - solve part 2: ~bin/image show -d 26x6 inputs/day-8/puzzle-input.sif~
+
+** Day 9
+To solve this puzzle, we need a "complete" intcode computer. This requires
+satisfying a few new operational constraints & adding a new opcode and
+instruction mode.
+
+To satisfy the requirement that intcode computers handle "big numbers," I
+switched from using Int32 for values throughout the codebase to using BigInts.
+This required a decent number of changes throughout the codebase, but that
+process highlighted for me how Crystal's compiler and type checker make
+refactoring less risky.
+
+To satisfy the requirement that programs be allowed to write outside of the
+initial program memory, I segmented the program space into two parts: ~data~,
+the initial program memory, and ~extra~, a map of memory addresses to values.
+This allows us to set a value at some far-out address without having to allocate
+a ton of memory, which is nice.
+
+It's interesting to note during part 2, where the performance of the intcode
+computer is stress-tested, that release builds are /much/ faster than dev
+builds. To test this yourself, time it with each build instruction below.
+
+On my computer, this results in a 4x speedup, resulting in a speedy sub-second
+runtime. (~=t_d / t_r * 100~ where ~t_r~ is release runtime and ~t_d~ is dev
+runtime)
+
+I haven't been profiling or optimizing much beyond gut-level instincts, so it's
+possible I may be missing something that would actually speed up execution again
+dramatically.
+
+- implementation: [[./computer/computer.cr]]
+- dev build: ~make bin/computer~
+- release build: ~crystal build --release -o bin/computer computer/main.cr~
+- solve part 1: ~bin/computer run -q inputs/day-9/puzzle-input.ic <<<1~
+- solve part 2: ~bin/computer run -q inputs/day-9/puzzle-input.ic <<<2~

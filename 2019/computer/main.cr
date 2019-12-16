@@ -11,18 +11,18 @@ abstract class IntcodeCommand < Cli::Command
     help
   end
 
-  def program
+  def program : Program
     return @program.not_nil! if @program
     program_file = case args.file
                    when "", "-"
                      STDIN
                    else
-                     File.read(args.file)
+                     File.open(args.file)
                    end
 
-    result = Immutable.from(program_file.each_line.first.split(",").map(&.to_i))
-    STDERR.puts "program:\n#{format_program(result, !options.one_line?)}" if options.verbose?
-    @program = result
+    result = Immutable.from(program_file.gets.not_nil!.split(",").map(&.to_big_i))
+    @program = Program.new result, Immutable::Map(BigInt, IC).new
+    STDERR.puts "program:\n#{format_program(@program.not_nil!, !options.one_line?)}" if options.verbose?
     @program.not_nil!
   end
 end
@@ -48,7 +48,7 @@ class Computer < Cli::Supercommand
 
     def run
       new_program = options.substitute.reduce(program) do |accum, sub|
-        index, value = sub.split(",").map(&.to_i { panic "error: substitutions must be integers" })
+        index, value = sub.split(",").map(&.to_big_i)
         accum.set(index, value)
       end
       STDERR.puts "(end of program output)" if options.verbose?
@@ -73,11 +73,11 @@ class Computer < Cli::Supercommand
       domain_panic_message = "error: domain must be two comma-separated integers"
       result = options.domain.split(",")
       panic domain_panic_message unless result.size == 2
-      result.map(&.to_i { panic domain_panic_message })
+      result.map(&.to_big_i)
     end
 
     def target
-      options.target.to_i { panic "error: target must be an integer" }
+      options.target.to_big_i
     end
 
     def success(noun, verb)
@@ -95,14 +95,14 @@ class Computer < Cli::Supercommand
     end
 
     def run
-      chan = Channel({noun: Int32, verb: Int32, result: Int32}).new
+      chan = Channel({noun: IC, verb: IC, result: IC}).new
 
       min, max = domain
       (min..max).each do |noun|
         spawn do
           (min..max).each do |verb|
-            new_program = program.set(1, noun).set(2, verb)
-            chan.send({noun: noun, verb: verb, result: run_intcode(new_program).first})
+            new_program = program.set(BigInt.new(1), noun).set(BigInt.new(2), verb)
+            chan.send({noun: noun, verb: verb, result: run_intcode(new_program).data.first})
           end
         end
       end
@@ -135,20 +135,20 @@ class Computer < Cli::Supercommand
       domain_panic_message = "error: domain must be two comma-separated integers"
       result = options.domain.split(",")
       panic domain_panic_message unless result.size == 2
-      result.map(&.to_i { panic domain_panic_message })
+      result.map(&.to_big_i)
     end
 
     def run
-      candidates = Channel({phase: Array(Int32), result: Int32}).new
+      candidates = Channel({phase: Array(IC), result: IC}).new
       min, max = domain
 
       (min..max).to_a.each_permutation.each_slice(16) do |group|
         spawn do
           group.each do |phase|
-            channels = phase.map { |n| Channel(Int32).new(2).send n }
+            channels = phase.map { |n| Channel(IC).new(2).send n }
             ch_init = channels.shift
-            ch_init.send 0
-            channels.push options.loop? ? ch_init : Channel(Int32).new(2)
+            ch_init.send 0.to_big_i
+            channels.push options.loop? ? ch_init : Channel(IC).new(2)
             status = Channel(Symbol).new()
             result = channels.reduce(ch_init) do |ch_in, ch_next|
               spawn same_thread: true do
