@@ -104,7 +104,7 @@ implementing part 2 was a minor change: add a new ~--loop~ option to the CLI,
 loop the I/O structures, and wait for all the IC programs to terminate before
 reading the final output.
 
-- implementation: mostly in [[./computer/main.cr]], but with some added facilities
+- implementation: mostly in [[./2019/computer/main.cr]], but with some added facilities
   for choosing whether to use stdin/stdout or internal data structures for I/O.
 - build: ~make bin/computer~
 - solve part 1: ~bin/computer optimize --domain 0,4 inputs/day-7/puzzle-input.ic~
@@ -114,7 +114,7 @@ reading the final output.
 This challenge lent itself to a satisfyingly compact representation in Crystal.
 I also found out that the "colorize" module is cute and easy to use.
 
-- implementation: [[./image/image.cr]]
+- implementation: [[./2019/image/image.cr]]
 - build: ~make bin/image~
 - solve part 1: ~bin/image check -d 26x6 inputs/day-8/puzzle-input.sif~
 - solve part 2: ~bin/image show -d 26x6 inputs/day-8/puzzle-input.sif~
@@ -148,7 +148,7 @@ I haven't been profiling or optimizing much beyond gut-level instincts, so it's
 possible I may be missing something that would actually speed up execution again
 dramatically.
 
-- implementation: [[./computer/computer.cr]]
+- implementation: [[./2019/computer/computer.cr]]
 - dev build: ~make bin/computer~
 - release build: ~crystal build --release -o bin/computer computer/main.cr~
 - solve part 1: ~bin/computer run -q inputs/day-9/puzzle-input.ic <<<1~
