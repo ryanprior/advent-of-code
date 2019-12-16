@@ -116,8 +116,8 @@ I also found out that the "colorize" module is cute and easy to use.
 
 - implementation: [[./2019/image/image.cr]]
 - build: ~make bin/image~
-- solve part 1: ~bin/image check -d 26x6 inputs/day-8/puzzle-input.sif~
-- solve part 2: ~bin/image show -d 26x6 inputs/day-8/puzzle-input.sif~
+- solve part 1: ~bin/image check -d 25x6 inputs/day-8/puzzle-input.sif~
+- solve part 2: ~bin/image show -d 25x6 inputs/day-8/puzzle-input.sif~
 
 ** Day 9
 To solve this puzzle, we need a "complete" intcode computer. This requires

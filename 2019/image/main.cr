@@ -3,7 +3,9 @@ require "./image.cr"
 
 class ImageCommand < Cli::Command
   class Options
-    string %w(-d --dimensions), desc: "dimensions of input image in pixels (eg \"3x5\")"
+    string %w(-d --dimensions),
+           desc: "dimensions of input image in pixels (eg \"3x5\")",
+           required: true
     arg "file", desc: "image file to read (in Space Image Format)"
   end
 
