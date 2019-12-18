@@ -153,3 +153,22 @@ dramatically.
 - release build: ~crystal build --release -o bin/computer computer/main.cr~
 - solve part 1: ~bin/computer run -q data/day-9/puzzle-input.ic <<<1~
 - solve part 2: ~bin/computer run -q data/day-9/puzzle-input.ic <<<2~
+
+** Day 10
+In order to help distressed elves in an asteroid field I built the ~asteroid~
+tool which can optimize for the best asteroid surveillance location and
+calculate the order in which asteroids will be vaporized by a laser beam. It
+does all this with vector math. I didn't look very hard for a vector library in
+Crystal's shards collection, but I didn't see anything obvious so I wrote my
+own with enough functionality to solve this puzzle.
+
+- implementation: [[./2019/src/asteroid/asteroid.cr]]
+- build: ~make bin/asteroid~
+- solve part 1: ~bin/asteroid optimize data/day-10/puzzle-input.map~
+- solve part 2:
+  #+BEGIN_SRC shell
+  bin/asteroid optimize -c $center \
+  --number 200 \
+  data/day-10/puzzle-input.map
+  #+END_SRC
+  (where ~$center~ is the output from part 1, in my case "29,28")
