@@ -28,16 +28,16 @@ set of priorities that align with how I want to write code:
 I wrote the ~rocket-fuel~ utility to calculate fuel requirements.
 - implementation: [[./2019/rocket-fuel/rocket-fuel.cr]]
 - build: ~make bin/rocket-fuel~
-- solve part 1: ~bin/rocket-fuel inputs/day-1/puzzle-input.mod~
-- solve part 2: ~bin/rocket-fuel -x inputs/day-1/puzzle-input.mod~
+- solve part 1: ~bin/rocket-fuel data/day-1/puzzle-input.mod~
+- solve part 2: ~bin/rocket-fuel -x data/day-1/puzzle-input.mod~
 
 ** Day 2
 On the second day of Christmas begins the saga of the /intcode computer!/
-- implementation: [[./2019/computer/computer.cr]]
+- implementation: [[./2019/src/computer/computer.cr]]
 - build: ~make bin/computer~
 - solve part 1:
   #+BEGIN_SRC bash
-  bin/computer run -s 1,12 -s 2,2 inputs/day-2/puzzle-input.ic \
+  bin/computer run -s 1,12 -s 2,2 data/day-2/puzzle-input.ic \
     | head -n1 \
     | cut -d' ' -f1
   #+END_SRC
@@ -45,21 +45,21 @@ On the second day of Christmas begins the saga of the /intcode computer!/
   #+BEGIN_SRC bash
   bin/computer search --domain 0,99 \
                       --target 19690720 \
-                      inputs/day-2/puzzle-input.ic
+                      data/day-2/puzzle-input.ic
   #+END_SRC
 
 ** Day 3
 This challenge required calculating the location of intersections and the
 lengths of paths. I wrote the ~trace-wires~ utility to assist.
-- implementation: [[./2019/trace-wires/trace-wires.cr]]
+- implementation: [[./2019/src/trace-wires/trace-wires.cr]]
 - build: ~make bin/trace-wires~
-- solve part 1: ~bin/trace-wires nearest-intersection inputs/day-3/puzzle-input.wire~
-- solve part 2: ~bin/trace-wires nearest-intersection inputs/day-3/puzzle-input.wire~
+- solve part 1: ~bin/trace-wires nearest-intersection data/day-3/puzzle-input.wire~
+- solve part 2: ~bin/trace-wires nearest-intersection data/day-3/puzzle-input.wire~
 
 ** Day 4
 Elves vaguely remember an important password & it's time to crack it using the
 ~password~ utility.
-- implementation: [[./2019/password/password.cr]]
+- implementation: [[./2019/src/password/password.cr]]
 - build: ~make bin/password~
 - solve part 1: ~bin/password [PUZZLE INPUT MIN] [MAX]~
 - solve part 2: ~bin/password --cap-run-length [PUZZLE INPUT MIN] [MAX]~
@@ -68,18 +68,18 @@ Elves vaguely remember an important password & it's time to crack it using the
 Intcode Part 2: Thermoelectric Boogaloo. This challenge prompted me to refactor
 ~computer.cr~, eliminating a number of previous simplifying assumptions. Then I
 added the new functions necessary to solve the puzzle.
-- implementation: [[./2019/computer/computer.cr]]
+- implementation: [[./2019/src/computer/computer.cr]]
 - build: ~make bin/computer~
-- solve part 1: ~bin/computer run -q inputs/day-5/puzzle-input.ic <<<1~
-- solve part 2: ~bin/computer run -q inputs/day-5/puzzle-input.ic <<<5~
+- solve part 1: ~bin/computer run -q data/day-5/puzzle-input.ic <<<1~
+- solve part 2: ~bin/computer run -q data/day-5/puzzle-input.ic <<<5~
 
 ** Day 6
 In order to plot an orbital path to Santa, we stop by a mapping station to
 process some maps with the ~orbit~ utility.
-- implementation: [[./2019/orbit/orbit.cr]]
+- implementation: [[./2019/src/orbit/orbit.cr]]
 - build: ~make bin/orbit~
-- solve part 1: ~bin/orbit sum inputs/day-6/puzzle-input.map~
-- solve part 2: ~bin/orbit path-distance inputs/day-6/puzzle-input.map~
+- solve part 1: ~bin/orbit sum data/day-6/puzzle-input.map~
+- solve part 2: ~bin/orbit path-distance data/day-6/puzzle-input.map~
 
 ** Day 7
 This challenge involves running an intcode program in many configurations, with
@@ -104,20 +104,20 @@ implementing part 2 was a minor change: add a new ~--loop~ option to the CLI,
 loop the I/O structures, and wait for all the IC programs to terminate before
 reading the final output.
 
-- implementation: mostly in [[./2019/computer/main.cr]], but with some added facilities
+- implementation: mostly in [[./2019/src/computer/main.cr]], but with some added facilities
   for choosing whether to use stdin/stdout or internal data structures for I/O.
 - build: ~make bin/computer~
-- solve part 1: ~bin/computer optimize --domain 0,4 inputs/day-7/puzzle-input.ic~
-- solve part 2: ~bin/computer optimize --domain 5,9 --loop inputs/day-7/puzzle-input.ic~
+- solve part 1: ~bin/computer optimize --domain 0,4 data/day-7/puzzle-input.ic~
+- solve part 2: ~bin/computer optimize --domain 5,9 --loop data/day-7/puzzle-input.ic~
 
 ** Day 8
 This challenge lent itself to a satisfyingly compact representation in Crystal.
 I also found out that the "colorize" module is cute and easy to use.
 
-- implementation: [[./2019/image/image.cr]]
+- implementation: [[./2019/src/image/image.cr]]
 - build: ~make bin/image~
-- solve part 1: ~bin/image check -d 25x6 inputs/day-8/puzzle-input.sif~
-- solve part 2: ~bin/image show -d 25x6 inputs/day-8/puzzle-input.sif~
+- solve part 1: ~bin/image check -d 25x6 data/day-8/puzzle-input.sif~
+- solve part 2: ~bin/image show -d 25x6 data/day-8/puzzle-input.sif~
 
 ** Day 9
 To solve this puzzle, we need a "complete" intcode computer. This requires
@@ -148,8 +148,8 @@ I haven't been profiling or optimizing much beyond gut-level instincts, so it's
 possible I may be missing something that would actually speed up execution again
 dramatically.
 
-- implementation: [[./2019/computer/computer.cr]]
+- implementation: [[./2019/src/computer/computer.cr]]
 - dev build: ~make bin/computer~
 - release build: ~crystal build --release -o bin/computer computer/main.cr~
-- solve part 1: ~bin/computer run -q inputs/day-9/puzzle-input.ic <<<1~
-- solve part 2: ~bin/computer run -q inputs/day-9/puzzle-input.ic <<<2~
+- solve part 1: ~bin/computer run -q data/day-9/puzzle-input.ic <<<1~
+- solve part 2: ~bin/computer run -q data/day-9/puzzle-input.ic <<<2~
