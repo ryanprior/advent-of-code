@@ -1,6 +1,10 @@
 This is the code and documentation for my [[https://adventofcode.com/][Advent of Code]] adventures. Thanks for
 taking a look! I welcome your thoughts and feedback.
 
+* Advent of Code 2020
+
+
+
 * Advent of Code 2019
 
 Santa is stranded at the edge of the Solar System and it's up to me to save
